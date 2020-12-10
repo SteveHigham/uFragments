@@ -9,9 +9,9 @@ require('chai')
   .use(require('chai-bn')(BN))
   .should();
 
-contract('UInt256Lib', () => {
+contract('UInt256Lib', function () {
   const MAX_INT256 =
-				new BN(2).pow(new BN(255)).sub(new BN(1));
+    new BN(2).pow(new BN(255)).sub(new BN(1));
 
   let UInt256Lib;
 
@@ -24,7 +24,7 @@ contract('UInt256Lib', () => {
   }
 
   describe('toInt256Safe', function () {
-    describe('when then number is more than MAX_INT256', () => {
+    describe('when then number is more than MAX_INT256', function () {
       it('should fail', async function () {
         expect(
           await chain.isEthException(
@@ -33,21 +33,21 @@ contract('UInt256Lib', () => {
       });
     });
 
-    describe('when then number is MAX_INT256', () => {
+    describe('when then number is MAX_INT256', function () {
       it('converts int to uint256 safely', async function () {
         (await returnVal(UInt256Lib.toInt256Safe(MAX_INT256)))
           .should.be.bignumber.eq(MAX_INT256);
       });
     });
 
-    describe('when then number is less than MAX_INT256', () => {
+    describe('when then number is less than MAX_INT256', function () {
       it('converts int to uint256 safely', async function () {
         (await returnVal(UInt256Lib.toInt256Safe(MAX_INT256.sub(new BN(1)))))
           .should.be.bignumber.eq(MAX_INT256.sub(new BN(1)));
       });
     });
 
-    describe('when then number is 0', () => {
+    describe('when then number is 0', function () {
       it('converts int to uint256 safely', async function () {
         (await returnVal(UInt256Lib.toInt256Safe(new BN(0))))
           .should.be.bignumber.eq(new BN(0));

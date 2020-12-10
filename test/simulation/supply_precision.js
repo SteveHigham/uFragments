@@ -31,14 +31,14 @@ async function exec () {
     data: encodeCall('initialize', ['address'], [deployer]),
     from: deployer
   });
-  await uFragments.setMonetaryPolicy(deployer, {from: deployer});
+  await uFragments.setMonetaryPolicy(deployer, { from: deployer });
 
   let i = 0;
   do {
     console.log('Iteration', i + 1);
 
     preRebaseSupply = await uFragments.totalSupply.call();
-    await uFragments.rebase(2 * i, 1, {from: deployer});
+    await uFragments.rebase(2 * i, 1, { from: deployer });
     postRebaseSupply = await uFragments.totalSupply.call();
     console.log('Rebased by 1 AMPL');
     console.log('Total supply is now', postRebaseSupply.toString(), 'AMPL');
@@ -47,13 +47,13 @@ async function exec () {
     expect(postRebaseSupply.minus(preRebaseSupply).toNumber()).to.eq(1);
 
     console.log('Doubling supply');
-    await uFragments.rebase(2 * i + 1, postRebaseSupply, {from: deployer});
+    await uFragments.rebase(2 * i + 1, postRebaseSupply, { from: deployer });
     i++;
   } while ((await uFragments.totalSupply.call()).lt(endSupply));
 }
 
 module.exports = function (done) {
-  exec().then(done).catch(e => {
+  exec().then(done).catch((e) => {
     console.error(e);
     process.exit(1);
   });

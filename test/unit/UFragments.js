@@ -114,13 +114,6 @@ contract('UFragments:setMonetaryPolicy:accessControl', function (accounts) {
       await chain.isEthException(uFragments.setMonetaryPolicy(policy, { from: deployer }))
     ).to.be.false;
   });
-});
-
-contract('UFragments:setMonetaryPolicy:accessControl', function (accounts) {
-  const policy = accounts[1];
-  const user = accounts[2];
-
-  before('setup UFragments contract', setupContracts);
 
   it('should NOT be callable by non-owner', async function () {
     expect(
@@ -132,7 +125,7 @@ contract('UFragments:setMonetaryPolicy:accessControl', function (accounts) {
 contract('UFragments:Rebase:accessControl', function (accounts) {
   before('setup UFragments contract', async function () {
     await setupContracts();
-    await uFragments.setMonetaryPolicy(user, {from: deployer});
+    await uFragments.setMonetaryPolicy(user, { from: deployer });
   });
 
   it('should be callable by monetary policy', async function () {
@@ -148,7 +141,7 @@ contract('UFragments:Rebase:accessControl', function (accounts) {
   });
 });
 
-contract('UFragments:Rebase:Expansion', function (accounts) {
+contract('UFragments:Rebase:Expansion:1', function (accounts) {
   // Rebase +5M (10%), with starting balances A:750 and B:250.
   const A = accounts[2];
   const B = accounts[3];
@@ -157,10 +150,10 @@ contract('UFragments:Rebase:Expansion', function (accounts) {
 
   before('setup UFragments contract', async function () {
     await setupContracts();
-    await uFragments.setMonetaryPolicy(policy, {from: deployer});
+    await uFragments.setMonetaryPolicy(policy, { from: deployer });
     await uFragments.transfer(A, toUFrgDenomination(750), { from: deployer });
     await uFragments.transfer(B, toUFrgDenomination(250), { from: deployer });
-    r = await uFragments.rebase(1, rebaseAmt, {from: policy});
+    r = await uFragments.rebase(1, rebaseAmt, { from: policy });
   });
 
   it('should increase the totalSupply', async function () {
@@ -185,26 +178,26 @@ contract('UFragments:Rebase:Expansion', function (accounts) {
   });
 
   it('should return the new supply', async function () {
-    const returnVal = await uFragments.rebase.call(2, rebaseAmt, {from: policy});
-    await uFragments.rebase(2, rebaseAmt, {from: policy});
+    const returnVal = await uFragments.rebase.call(2, rebaseAmt, { from: policy });
+    await uFragments.rebase(2, rebaseAmt, { from: policy });
     const supply = await uFragments.totalSupply.call();
     returnVal.should.be.bignumber.eq(supply);
   });
 });
 
-contract('UFragments:Rebase:Expansion', function (accounts) {
+contract('UFragments:Rebase:Expansion:2', function (accounts) {
   const policy = accounts[1];
   const MAX_SUPPLY = new BN(2).pow(new BN(128)).sub(new BN(1));
 
   describe('when totalSupply is less than MAX_SUPPLY and expands beyond', function () {
     before('setup UFragments contract', async function () {
       await setupContracts();
-      await uFragments.setMonetaryPolicy(policy, {from: deployer});
+      await uFragments.setMonetaryPolicy(policy, { from: deployer });
       const totalSupply = await uFragments.totalSupply.call();
       await uFragments.rebase(1,
         MAX_SUPPLY.sub(totalSupply).sub(toUFrgDenomination(1)),
-        {from: policy});
-      r = await uFragments.rebase(2, toUFrgDenomination(2), {from: policy});
+        { from: policy });
+      r = await uFragments.rebase(2, toUFrgDenomination(2), { from: policy });
     });
 
     it('should increase the totalSupply to MAX_SUPPLY', async function () {
@@ -225,7 +218,7 @@ contract('UFragments:Rebase:Expansion', function (accounts) {
     before(async function () {
       b = await uFragments.totalSupply.call();
       b.should.be.bignumber.eq(MAX_SUPPLY);
-      r = await uFragments.rebase(3, toUFrgDenomination(2), {from: policy});
+      r = await uFragments.rebase(3, toUFrgDenomination(2), { from: policy });
     });
 
     it('should NOT change the totalSupply', async function () {
@@ -251,10 +244,10 @@ contract('UFragments:Rebase:NoChange', function (accounts) {
 
   before('setup UFragments contract', async function () {
     await setupContracts();
-    await uFragments.setMonetaryPolicy(policy, {from: deployer});
+    await uFragments.setMonetaryPolicy(policy, { from: deployer });
     await uFragments.transfer(A, toUFrgDenomination(750), { from: deployer });
     await uFragments.transfer(B, toUFrgDenomination(250), { from: deployer });
-    r = await uFragments.rebase(1, 0, {from: policy});
+    r = await uFragments.rebase(1, 0, { from: policy });
   });
 
   it('should NOT CHANGE the totalSupply', async function () {
@@ -288,10 +281,10 @@ contract('UFragments:Rebase:Contraction', function (accounts) {
 
   before('setup UFragments contract', async function () {
     await setupContracts();
-    await uFragments.setMonetaryPolicy(policy, {from: deployer});
+    await uFragments.setMonetaryPolicy(policy, { from: deployer });
     await uFragments.transfer(A, toUFrgDenomination(750), { from: deployer });
     await uFragments.transfer(B, toUFrgDenomination(250), { from: deployer });
-    r = await uFragments.rebase(1, -rebaseAmt, {from: policy});
+    r = await uFragments.rebase(1, -rebaseAmt, { from: policy });
   });
 
   it('should decrease the totalSupply', async function () {
@@ -334,7 +327,7 @@ contract('UFragments:Transfer', function (accounts) {
     });
   });
 
-  describe('deployer transfers 15 to B', async function () {
+  describe('deployer transfers 15 to B', function () {
     it('should have balances [973,15]', async function () {
       const deployerBefore = await uFragments.balanceOf.call(deployer);
       await uFragments.transfer(B, toUFrgDenomination(15), { from: deployer });
@@ -345,7 +338,7 @@ contract('UFragments:Transfer', function (accounts) {
     });
   });
 
-  describe('deployer transfers the rest to C', async function () {
+  describe('deployer transfers the rest to C', function () {
     it('should have balances [0,973]', async function () {
       const deployerBefore = await uFragments.balanceOf.call(deployer);
       await uFragments.transfer(C, deployerBefore, { from: deployer });

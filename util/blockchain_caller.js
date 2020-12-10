@@ -4,16 +4,18 @@ class BlockchainCaller {
   constructor (web3) {
     this._web3 = web3;
   }
+
   get web3 () {
     return this._web3;
   }
+
   rpcmsg (method, params = []) {
     const id = Date.now();
     return {
       jsonrpc: '2.0',
       method: method,
       params: params,
-      'id': id
+      id: id
     };
   }
 }

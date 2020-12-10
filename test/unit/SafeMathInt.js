@@ -9,11 +9,11 @@ require('chai')
   .use(require('chai-bn')(BN))
   .should();
 
-contract('SafeMathInt', () => {
+contract('SafeMathInt', function () {
   const MIN_INT256 =
-				new BN(new BN(-2)).pow(new BN(255));
+    new BN(new BN(-2)).pow(new BN(255));
   const MAX_INT256 =
-				new BN(2).pow(new BN(255)).sub(new BN(1));
+    new BN(2).pow(new BN(255)).sub(new BN(1));
 
   let safeMathInt;
 

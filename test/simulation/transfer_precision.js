@@ -32,8 +32,8 @@ preRebaseSupply = new BN(0);
 postRebaseSupply = new BN(0);
 
 async function checkBalancesAfterOperation (users, op, chk) {
-  const _bals = [ ];
-  const bals = [ ];
+  const _bals = [];
+  const bals = [];
   let u;
   for (u in users) {
     if (Object.prototype.hasOwnProperty.call(users, u)) {
@@ -70,11 +70,11 @@ async function exec () {
     data: encodeCall('initialize', ['address'], [deployer]),
     from: deployer
   });
-  await uFragments.setMonetaryPolicy(deployer, {from: deployer});
+  await uFragments.setMonetaryPolicy(deployer, { from: deployer });
 
   let i = 0;
   do {
-    await uFragments.rebase(i + 1, rebaseAmt, {from: deployer});
+    await uFragments.rebase(i + 1, rebaseAmt, { from: deployer });
     postRebaseSupply = await uFragments.totalSupply.call();
     i++;
 
@@ -98,7 +98,7 @@ async function exec () {
 }
 
 module.exports = function (done) {
-  exec().then(done).catch(e => {
+  exec().then(done).catch((e) => {
     console.error(e);
     process.exit(1);
   });
